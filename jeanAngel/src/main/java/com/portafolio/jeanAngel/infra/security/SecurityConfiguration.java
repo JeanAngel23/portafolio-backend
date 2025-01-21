@@ -34,7 +34,11 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/skills").authenticated() // Protege este endpoint
+                        .requestMatchers(HttpMethod.GET, "/api/projects").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/projects").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/projects/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE,"/api/projects/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/skills").authenticated()
                         .requestMatchers(HttpMethod.GET,"/api/contact").authenticated()
                         .anyRequest().authenticated()
                 )

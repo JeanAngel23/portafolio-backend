@@ -8,13 +8,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class Project {
 
@@ -29,7 +27,6 @@ public class Project {
 
     //Tener en cuenta el campo Status para realizar el delete logico en el crud
 
-    //Contructor basio ya que presentamos problemas con Lombok
     public Project() {
     }
 
