@@ -12,6 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -24,15 +28,16 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/projects")
-//@SecurityRequirement(name = "bearer-key")
-
+// @SecurityRequirement(name = "bearer-key")
 public class ProjectController {
 
     private final IProjectService iProjectService;
+    private final PagedResourcesAssembler<DataListProject> pagedResourcesAssembler;
 
     @Autowired
-    public ProjectController(IProjectService iProjectService) {
+    public ProjectController(IProjectService iProjectService, PagedResourcesAssembler<DataListProject> pagedResourcesAssembler) {
         this.iProjectService = iProjectService;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
     }
 
     @PostMapping
@@ -46,9 +51,22 @@ public class ProjectController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<DataListProject>> listProyects(@PageableDefault(size = 12, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<DataListProject> proyects = iProjectService.listAllProjects(pageable);
-        return ResponseEntity.ok(proyects);
+    public ResponseEntity<PagedModel<EntityModel<DataListProject>>> listProyects(
+            @PageableDefault(size = 12, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+
+        Page<DataListProject> projectsPage = iProjectService.listAllProjects(pageable);
+
+        PagedModel<EntityModel<DataListProject>> pagedModel = pagedResourcesAssembler.toModel(
+                projectsPage,
+                project -> EntityModel.of(
+                        project,
+                        WebMvcLinkBuilder.linkTo(
+                                WebMvcLinkBuilder.methodOn(ProjectController.class).returnProyect(project.id())
+                        ).withSelfRel()
+                )
+        );
+
+        return ResponseEntity.ok(pagedModel);
     }
 
     @GetMapping("/{id}")
