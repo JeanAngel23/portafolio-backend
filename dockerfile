@@ -21,6 +21,6 @@ COPY --from=build /app/target/jeanAngel-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8000
 
 # Comando para ejecutar la aplicación
-CMD ["java", "-jar", "app.jar"]
+CMD ["java", "-jar", "app.jar", "--server.port=8000"]
 
 
