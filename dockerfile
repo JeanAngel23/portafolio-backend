@@ -18,7 +18,7 @@ WORKDIR /app
 COPY --from=build /app/target/jeanAngel-0.0.1-SNAPSHOT.jar app.jar
 
 # Exponer el puerto donde correrá la aplicación
-EXPOSE 8080
+EXPOSE 8000
 
 # Comando para ejecutar la aplicación
 CMD ["java", "-jar", "app.jar"]
